@@ -81,7 +81,7 @@
                 const hls = new Hls();
                 const select = document.getElementById('qualitySelect');
 
-                hls.loadSource(`/${video.hls_path}`);  // Your HLS URL
+                hls.loadSource(video.hls_path);  // Your HLS URL
                 hls.attachMedia(videoPlayer);
 
                 hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
@@ -107,7 +107,7 @@
 
             } else {
                 // Load as mp4
-                videoPlayer.src = `/${video.video_path}`;
+                videoPlayer.src = video.video_path;
             }
 
             // Update metadata
