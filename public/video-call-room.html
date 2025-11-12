@@ -167,7 +167,8 @@
   async function handleWebSocketMessage(data) {
     switch (data.messageType) {
       case "user_joined":
-        await createPeerConnection(data.socketId, data.username);
+        // Don't create peer connection yet - wait for their offer
+        console.log(`User ${data.username} joined, waiting for their offer`);
         break;
       case "existing_participants":
         for (const participant of data.participants) {
@@ -360,22 +361,12 @@
             }
           }
         } else {
-          console.warn(
-            `Invalid state for setting remote answer: ${pc.signalingState}`
+          console.error(
+            `Cannot set remote answer - invalid signaling state: ${pc.signalingState}. This should not happen.`
           );
-          // If we're in stable state, it might mean we missed the offer
-          if (pc.signalingState === "stable") {
-            // Clean up the old connection
-            removePeerConnection(data.socketId);
-            // Create a new connection
-            await createPeerConnection(data.socketId, data.username);
-          }
         }
       } catch (error) {
         console.error("Error setting remote description:", error);
-        // If there's an error, we should probably reset the connection
-        removePeerConnection(data.socketId);
-        await createPeerConnection(data.socketId, data.username);
       }
     }
   }
